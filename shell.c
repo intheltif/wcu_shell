@@ -148,7 +148,7 @@ void sigintHandler(int sigNum) {
 
     if(CHILD_PID(childPid)) {
         pid_t pidd = getppid();
-        kill(pidd, SIGINT);
+        kill(pidd, sigNum);
     }
 }
 
@@ -181,8 +181,8 @@ void proccess_line(char** line, int* lineIndex, char** args) {
 
 
 
-
-        execvp("./shell", args); //TODO Is this right?
+        execvp(args[0], args); //TODO maybe this is better than below?
+        //execvp("./shell", args); //TODO Is this right?
         //_exit(1);
     } else if (strcmp(line[*lineIndex], ">>") == 0) {
         (*lineIndex)++;
@@ -259,8 +259,8 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * Close any unnecessary file descriptors.
          */
         newfd = dup_wrapper(STDOUT_FILENO);
+        pipefd[0] = newfd;
         close(STDOUT_FILENO);
-        write(newfd, pipefd[1], MAX_STRING_LENGTH);
 
 
 
@@ -271,7 +271,8 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * below with code to replace this in-memeory process image with an instance of the
          * specified program.  (Here, in p1Args)
          */
-        execvp("./shell", p1Args); //TODO Again, is this right???
+        execvp(p1Args[0], p1Args);
+        //execvp("./shell", p1Args); //TODO Again, is this right???
         //_exit(1);
 
     } else {  /* Parent will keep going */
@@ -284,8 +285,8 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          */
 
         newfd = dup_wrapper(STDIN_FILENO);
+        pipefd[1] = newfd;
         close(STDIN_FILENO);
-        write(newfd, pipefd[0], MAX_STRING_LENGTH);
 
 
 
