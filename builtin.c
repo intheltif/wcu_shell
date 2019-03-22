@@ -148,14 +148,18 @@ void do_history(char** args) {
      * TODO: Write code here that will print the last n commands executed via this shell.
      */                                                                         
 
+    int i = 1;
+
     if(args[1] == NULL) {
         print_commands();
     } else {
-        if(args[1] > /* HIST SIZE */) {
-            perror("Please enter a number between 0 and 40");
+        while(args[i] != NULL) {
+            if(args[i] > (HIST_SIZE - 1)) {
+                perror("Please enter a number between 0 and 39");
+            }
+            //print the specified line 
+            print_single_command(args[i]);
+            i++;
         }
-        //print the specified line 
-        print_single_command(args[1]);
     }
-
 }
