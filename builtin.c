@@ -147,8 +147,15 @@ void do_history(char** args) {
     /*                                                                          
      * TODO: Write code here that will print the last n commands executed via this shell.
      */                                                                         
-    
-    printf(count + ":" + executedCommands); 
-    get_commands(args);
+
+    if(args[1] == NULL) {
+        print_commands();
+    } else {
+        if(args[1] > /* HIST SIZE */) {
+            perror("Please enter a number between 0 and 40");
+        }
+        //print the specified line 
+        print_single_command(args[1]);
+    }
 
 }
