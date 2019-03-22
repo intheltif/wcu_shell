@@ -14,12 +14,19 @@ void append_redirection(char* filename) {
      * TODO:  Write code to cause the standard output of this process to be sent to a file with
      * the specified name.  The output should be appended to the file if the file already exists.
      */
-    
-    int fd = open(filename, O_CREAT|O_WRONLY|O_APPEND, 0644);
+
+    int fd = INVALID; // Initialize to invalid.
+    int writefd = INVALID;
+
+    fd = open(filename, O_CREAT|O_WRONLY|O_APPEND, 0644);
+    if(fd < 0) {
+        printf("Failed append redirection : File Descriptor Invalid.");
+    }
     dup2(fd, STDOUT_FILENO);
     if(fd < 0) {
         printf("Failed append redirection : File Descriptor Invalid.");
     }
+
     close(fd);
 
 
@@ -42,11 +49,18 @@ void stdout_redirection(char* filename) {
      */
 
 
-    int fd = open(filename, O_CREAT|O_WRONLY|O_TRUNC, 0644);
+    int fd = INVALID; // Initialize to invalid.
+    int writefd = INVALID;
+
+    fd = open(filename, O_CREAT|O_WRONLY|O_TRUNC, 0644);
+    if(fd < 0) {
+        printf("Failed append redirection : File Descriptor Invalid.");
+    }
     dup2(fd, STDOUT_FILENO);
     if(fd < 0) {
         printf("Failed append redirection : File Descriptor Invalid.");
     }
+
     close(fd);
 
 
@@ -67,11 +81,18 @@ void stderr_redirection(char* filename) {
      * process writes to the file.
      */
 
-    int fd = open(filename, O_CREAT|O_WRONLY|O_TRUNC, 0644);
+    int fd = INVALID; // Initialize to invalid.
+    int writefd = INVALID;
+
+    fd = open(filename, O_CREAT|O_WRONLY|O_TRUNC, 0644);
+    if(fd < 0) {
+        printf("Failed append redirection : File Descriptor Invalid.");
+    }
     dup2(fd, STDERR_FILENO);
     if(fd < 0) {
         printf("Failed append redirection : File Descriptor Invalid.");
     }
+
     close(fd);
 
 
@@ -95,13 +116,22 @@ void stdout_stderr_redirection(char* filename) {
      * truncated before this process writes to the file.
      */
 
-    int fd = open(filename, O_CREAT|O_WRONLY|O_TRUNC, 0644);
-    dup2(fd, STDOUT_FILENO);
-    dup2(fd, STDERR_FILENO);
+    int fd = INVALID; // Initialize to invalid.
+    int fd2 = INVALID;
+
+    fd = open(filename, O_CREAT|O_WRONLY|O_TRUNC, 0644);
     if(fd < 0) {
         printf("Failed append redirection : File Descriptor Invalid.");
     }
+    dup2(fd, STDOUT_FILENO);
+    dup2(fd2, STDERR_FILENO);
+    if(fd < 0 || fd2 < 0) {
+        printf("Failed append redirection : File Descriptor Invalid.");
+    }
+
     close(fd);
+
+
 
 
 

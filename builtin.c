@@ -148,20 +148,7 @@ void do_history(char** args) {
      * TODO: Write code here that will print the last n commands executed via this shell.
      */                                                                         
     
-    
-    
-    
     printf(count + ":" + executedCommands); 
+    get_commands(args);
 
-
-
-
-
-
-
-
-
-
-
-
-
+}

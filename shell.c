@@ -89,11 +89,17 @@ int main(void) {
             parse_args(args, line, &lineIndex);
 
             /* TODO: Somewhere here remember commands executed*/
+            get_Commands(char* line)
     
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {
                 do_file_list(args);
             } else if (strcmp(args[0], "touch") == 0) {
+                do_touch(args);
+            } else if (strcmp(args[0], "rm") == 0) {
+                do_file_remove(args);
+            } else if (strcmp(args[0], "history") == 0) {
+                do_history(args);
                 do_touch(args);
             } else if (strcmp(args[0], "rm") == 0) {
                 do_file_remove(args);
@@ -149,7 +155,7 @@ void sigintHandler(int sigNum) {
 
     if(CHILD_PID(childPid)) {
         pid_t pidd = getppid();
-        kill(pidd, SIGINT);
+        kill(pidd, sigNum);
     }
 }
 
@@ -182,8 +188,7 @@ void proccess_line(char** line, int* lineIndex, char** args) {
 
 
 
-
-        execvp("./shell", args); //TODO Is this right?
+        execvp(args[0], args); 
         //_exit(1);
     } else if (strcmp(line[*lineIndex], ">>") == 0) {
         (*lineIndex)++;
@@ -242,7 +247,6 @@ void proccess_line(char** line, int* lineIndex, char** args) {
 void do_pipe(char** p1Args, char** line, int* lineIndex) {
     int   pipefd[2]; /* Array of integers to hold 2 file descriptors. */
     pid_t pid;       /* PID of a child process */
-    int newfd;       /* Newly created file descriptor */
 
     /*
      * TODO: Write code here that will create a pipe -- a unidirectional data channel that can be
@@ -259,9 +263,10 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * connect this processes standard output stream to the output side of the pipe in pipefd.
          * Close any unnecessary file descriptors.
          */
-        newfd = dup_wrapper(STDOUT_FILENO);
+        close(pipefd[0]);
         close(STDOUT_FILENO);
-        write(newfd, pipefd[1], MAX_STRING_LENGTH);
+        dup_wrapper(pipefd[1]);
+        close(pipefd[1]);
 
 
 
@@ -272,7 +277,7 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * below with code to replace this in-memeory process image with an instance of the
          * specified program.  (Here, in p1Args)
          */
-        execvp("./shell", p1Args); //TODO Again, is this right???
+        execvp(p1Args[0], p1Args);
         //_exit(1);
 
     } else {  /* Parent will keep going */
@@ -284,9 +289,10 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * Close any unnecessary file descriptors.
          */
 
-        newfd = dup_wrapper(STDIN_FILENO);
+        close(pipefd[1]);
         close(STDIN_FILENO);
-        write(newfd, pipefd[0], MAX_STRING_LENGTH);
+        dup_wrapper(pipefd[0]);
+        close(pipefd[0]);
 
 
 
@@ -311,11 +317,6 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
  * lineIndex - A pointer to the index of the next token to be processed.
  *             This index should point to one element beyond the pipe
  *             symbol.
- */
-void parse_args(char** args, char** line, int* lineIndex) {
-    int i;
-
-    for (i = 0;    line[*lineIndex] != NULL
                 && !is_special(line[*lineIndex]); ++(*lineIndex), ++i) {
         args[i] = line[*lineIndex];
     }
