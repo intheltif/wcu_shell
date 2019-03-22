@@ -66,6 +66,7 @@ int main(void) {
      * 'signal' system call here to put that handler in place for the SIGINT signal.  (The SIGINT
      * signal is what gets sent to a process when you hit Ctrl-C).  The implementation of your
      * signal hander should deliver the received signal to the process with pid 'childPid'
+     *
      * (above).  Note that when 'childPid' contains 0, the signal should be ignored.
      */
 
@@ -88,7 +89,7 @@ int main(void) {
             parse_args(args, line, &lineIndex);
 
             /* TODO: Somewhere here remember commands executed*/
-
+    
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {
                 do_file_list(args);
