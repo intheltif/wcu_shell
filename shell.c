@@ -89,7 +89,7 @@ int main(void) {
             parse_args(args, line, &lineIndex);
 
             /* TODO: Somewhere here remember commands executed*/
-            get_Commands(char* line)
+            add_history(line)
     
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {

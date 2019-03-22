@@ -4,7 +4,7 @@
 
 int main(void) {
 
-    char commands[HIST_SIZE][256]; 
+    char commands[HIST_SIZE];
 }
 
 char get_Commands(char** executedCommand){
