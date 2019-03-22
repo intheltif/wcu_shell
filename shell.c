@@ -88,6 +88,7 @@ int main(void) {
             parse_args(args, line, &lineIndex);
 
             /* TODO: Somewhere here remember commands executed*/
+            add_history(line);
 
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {
@@ -181,8 +182,7 @@ void proccess_line(char** line, int* lineIndex, char** args) {
 
 
 
-        execvp(args[0], args); //TODO maybe this is better than below?
-        //execvp("./shell", args); //TODO Is this right?
+        execvp(args[0], args); 
         //_exit(1);
     } else if (strcmp(line[*lineIndex], ">>") == 0) {
         (*lineIndex)++;
@@ -241,7 +241,6 @@ void proccess_line(char** line, int* lineIndex, char** args) {
 void do_pipe(char** p1Args, char** line, int* lineIndex) {
     int   pipefd[2]; /* Array of integers to hold 2 file descriptors. */
     pid_t pid;       /* PID of a child process */
-    int newfd;       /* Newly created file descriptor */
 
     /*
      * TODO: Write code here that will create a pipe -- a unidirectional data channel that can be
@@ -258,9 +257,10 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * connect this processes standard output stream to the output side of the pipe in pipefd.
          * Close any unnecessary file descriptors.
          */
-        newfd = dup_wrapper(STDOUT_FILENO);
-        pipefd[0] = newfd;
+        close(pipefd[0]);
         close(STDOUT_FILENO);
+        dup_wrapper(pipefd[1]);
+        close(pipefd[1]);
 
 
 
@@ -272,7 +272,6 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * specified program.  (Here, in p1Args)
          */
         execvp(p1Args[0], p1Args);
-        //execvp("./shell", p1Args); //TODO Again, is this right???
         //_exit(1);
 
     } else {  /* Parent will keep going */
@@ -284,9 +283,10 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
          * Close any unnecessary file descriptors.
          */
 
-        newfd = dup_wrapper(STDIN_FILENO);
-        pipefd[1] = newfd;
+        close(pipefd[1]);
         close(STDIN_FILENO);
+        dup_wrapper(pipefd[0]);
+        close(pipefd[0]);
 
 
 
@@ -366,12 +366,7 @@ void pipe_wrapper(int pipefds[]) {
      * terminate the program.                                             
      */                                                                         
     
-    /** The returned value from the pipe system call, used for error checking */
-    int pipeReturnVal; //TODO Should this be -1 initially? Is that safer?
-
-    pipeReturnVal = pipe(pipefds);
-
-    if(pipeReturnVal < 0) {
+    if(pipe(pipefds) < 0) {
         perror("Pipe failed");
         _exit(1);
     }
