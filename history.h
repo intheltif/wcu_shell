@@ -8,4 +8,8 @@
  */
 
 //Method stubs
-void get_commands(char**);
+void add_history(char**);
+
+void print_commands(void);
+
+void print_single_command(int);

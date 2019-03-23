@@ -28,7 +28,6 @@ void do_file_list(char** args) {
         //Assures directory stream can be opened
         if( (directory = opendir(".")) == NULL) {
             perror("Cannot open current directory");
-            //_exit(1);
         }
         
         // Reads from the directory stream, gets filenames, and prints items to the console
@@ -40,13 +39,11 @@ void do_file_list(char** args) {
                (strcmp(args[1], "-t") == 0)   ) {
             
             printf("Unsupported operation.\n");
-            //_exit(1);
     } else {
 
         //Does same as above, except for a specified directory
         if( (directory = opendir(args[1])) == NULL) {
             perror("Cannot open specified directory");
-            //_exit(1);
         }
 
         while( (dir_p = readdir(directory)) != NULL ) {
@@ -79,14 +76,13 @@ void do_file_remove(char** args) {
     //Check that a filename was provided
     if(args[1] == NULL) {
         perror("Please specify a filename to remove");
-        //_exit(1);
     }
 
     while(args[i] != NULL) {
 
         removed = unlink(args[i]);
         if(removed == 0) {
-            printf("\nremoved %s\n", args[i]);
+            printf("\nremoved %s\n\n", args[i]);
         } else {
             perror("Could not remove file");
         }
@@ -111,7 +107,7 @@ void do_touch(char** args) {
      */                                                                         
 
     int i = 1;
-    int accessed = 0;
+    int accessed = -1;
     
     if(args[1] == NULL) {
         perror("Please specify a filename");
@@ -123,7 +119,6 @@ void do_touch(char** args) {
                 if(errno == ENOENT) {
                     open(args[i], O_CREAT, 0644);
                 }
-                perror("Error accessing specified file");
             }
             i++;
         }
@@ -151,14 +146,15 @@ void do_history(char** args) {
     int i = 1;
 
     if(args[1] == NULL) {
+        //print all of history
         print_commands();
     } else {
         while(args[i] != NULL) {
-            if(args[i] > (HIST_SIZE - 1)) {
+            if(atoi(args[i]) > 39) {
                 perror("Please enter a number between 0 and 39");
             }
             //print the specified line 
-            print_single_command(args[i]);
+            print_single_command(atoi(args[i]));
             i++;
         }
     }

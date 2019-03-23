@@ -89,17 +89,12 @@ int main(void) {
             parse_args(args, line, &lineIndex);
 
             /* TODO: Somewhere here remember commands executed*/
-            add_history(line)
+            add_history(line);
     
             /* Determine which command we are running*/
             if (strcmp(args[0], "ls") == 0) {
                 do_file_list(args);
             } else if (strcmp(args[0], "touch") == 0) {
-                do_touch(args);
-            } else if (strcmp(args[0], "rm") == 0) {
-                do_file_remove(args);
-            } else if (strcmp(args[0], "history") == 0) {
-                do_history(args);
                 do_touch(args);
             } else if (strcmp(args[0], "rm") == 0) {
                 do_file_remove(args);
@@ -125,13 +120,6 @@ int main(void) {
                     
                     wait(&status); // Waits for the child to die.
                     printf("\nChild %d has exited with status %d\n", childPid, status);
-
-
-
-
-
-
-
 
                 }
             }
@@ -189,7 +177,6 @@ void proccess_line(char** line, int* lineIndex, char** args) {
 
 
         execvp(args[0], args); 
-        //_exit(1);
     } else if (strcmp(line[*lineIndex], ">>") == 0) {
         (*lineIndex)++;
         append_redirection(line[*lineIndex]);
@@ -317,7 +304,12 @@ void do_pipe(char** p1Args, char** line, int* lineIndex) {
  * lineIndex - A pointer to the index of the next token to be processed.
  *             This index should point to one element beyond the pipe
  *             symbol.
+ */
+void parse_args(char** args, char** line, int* lineIndex) {
+    int i;
+    for (i = 0;   line[*lineIndex] != NULL
                 && !is_special(line[*lineIndex]); ++(*lineIndex), ++i) {
+
         args[i] = line[*lineIndex];
     }
     args[i] = NULL;

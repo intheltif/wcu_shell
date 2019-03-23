@@ -13,7 +13,7 @@ LIBS=-lfl
 LEX=flex
 RM=rm -f
 
-OBJECTS=shellParser.o  builtin.o redirect.o shell.o #history.o
+OBJECTS=shellParser.o  builtin.o redirect.o shell.o history.o
 PROG=shell
 
 all:	$(PROG)
@@ -23,11 +23,11 @@ shellParser.c:	shellParser.l shellParser.h
 
 shellParser.o:	shellParser.c
 shell.o:		shell.c shell.h shellParser.h
-#history.o:		history.c history.h
+history.o:		history.c history.h
 builtin.o:		builtin.c builtin.h shell.h
 redirect.o:		redirect.c shell.h redirect.h
 
-shell:	redirect.o builtin.o shell.o shellParser.o #history.o 
+shell:	redirect.o builtin.o shell.o shellParser.o history.o 
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(PROG) $(LIBS)
 
 clean:

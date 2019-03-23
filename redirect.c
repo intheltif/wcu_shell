@@ -16,7 +16,6 @@ void append_redirection(char* filename) {
      */
 
     int fd = INVALID; // Initialize to invalid.
-    int writefd = INVALID;
 
     fd = open(filename, O_CREAT|O_WRONLY|O_APPEND, 0644);
     if(fd < 0) {
@@ -50,7 +49,6 @@ void stdout_redirection(char* filename) {
 
 
     int fd = INVALID; // Initialize to invalid.
-    int writefd = INVALID;
 
     fd = open(filename, O_CREAT|O_WRONLY|O_TRUNC, 0644);
     if(fd < 0) {
@@ -82,7 +80,6 @@ void stderr_redirection(char* filename) {
      */
 
     int fd = INVALID; // Initialize to invalid.
-    int writefd = INVALID;
 
     fd = open(filename, O_CREAT|O_WRONLY|O_TRUNC, 0644);
     if(fd < 0) {
